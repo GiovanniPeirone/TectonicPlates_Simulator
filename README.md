@@ -1,2 +1,2 @@
 # PlacasTectonicas_Simulador
-Aplicacion en PyGame que simula las placas tectonicas
+PyGame application that simulates tectonic plates
