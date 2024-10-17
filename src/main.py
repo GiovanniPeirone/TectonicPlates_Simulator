@@ -1,8 +1,6 @@
-import pygame
+from game import game
 
 def main():
-    while True:
-        pass
+    game.game()
 if __name__ == '__main__':
     main()
-    exit
