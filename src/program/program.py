@@ -1,5 +1,5 @@
 import pygame
-import 
+import map
 
 def program():
     pygame.init()
@@ -19,7 +19,7 @@ def program():
 
         # ------------------ Codigo -------------------------------
 
-        new_world = map(20,20)
+        new_world = map.map(20,20)
         new_world.Maping()
 
         # fill the screen with a color to wipe away anything from last frame
