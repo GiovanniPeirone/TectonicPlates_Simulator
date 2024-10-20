@@ -1,6 +1,6 @@
 import pygame
 
-def game():
+def program():
     pygame.init()
     screen = pygame.display.set_mode((1180, 720))
     clock = pygame.time.Clock()
@@ -16,7 +16,7 @@ def game():
 
         screen.fill("black")
 
-        # ------------------Codigo -------------------------------
+        # ------------------ Codigo -------------------------------
 
         
 

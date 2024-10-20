@@ -1,6 +1,6 @@
-from game import game
+from program import program
 
 def main():
-    game.game()
+    program.program()
 if __name__ == '__main__':
     main()
