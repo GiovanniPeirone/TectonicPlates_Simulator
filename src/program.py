@@ -16,11 +16,24 @@ def program():
                 running = False
 
         screen.fill("black")
-
+        WHITE =     (255, 255, 255)
         # ------------------ Codigo -------------------------------
+        
+        mapArr = []
 
-        new_world = map.map(20,20)
-        new_world.Maping()
+        new_world = map.maps(20,20)
+        #new_world.Maping()
+        
+        for i in new_world.height:
+            for o in new_world.widhgt:
+                mapArr[i][o].append(1)
+
+        for i in mapArr:
+            if mapArr[i] == 1:
+                pygame.draw.circle(screen, WHITE, i, 20)
+
+        
+
 
         # fill the screen with a color to wipe away anything from last frame
         

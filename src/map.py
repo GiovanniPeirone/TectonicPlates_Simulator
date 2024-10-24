@@ -1,8 +1,8 @@
 import pygame
 
-class map:
+class maps:
     
-    def __init__(self, widhgt, height) -> None:
+    def __init__(self, widhgt, height):
         self.widhgt = widhgt
         self.height = height
 
