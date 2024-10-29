@@ -1,4 +1,4 @@
-from program import program
+import program
 
 def main():
     program.program()
