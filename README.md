@@ -1,7 +1,7 @@
 # PlacasTectonicas_Simulador
 application that simulates tectonic plates
 
-#OpenGL - OpenTK
+# OpenGL - OpenTK
 dotnet add package OpenTK --version 4.8.2
 
 
