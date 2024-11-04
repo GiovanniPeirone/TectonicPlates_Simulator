@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Simulation
-build_property.ProjectDir = C:\Users\Giovanni Peirone\Documents\GitHub\TectonicPlates_Simulator\Simulation\Simulation\
+build_property.ProjectDir = C:\Users\Giovanni Peirone\Documents\GitHub\GiOS\TectonicPlates_Simulator\Simulation\Simulation\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
