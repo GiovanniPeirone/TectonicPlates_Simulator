@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|c:\\users\\giovanni peirone\\documents\\github\\tectonicplates_simulator\\simulation\\simulation\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|solutionrelative:simulation\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|c:\\users\\giovanni peirone\\documents\\github\\tectonicplates_simulator\\simulation\\simulation\\window.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|solutionrelative:simulation\\window.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|c:\\users\\giovanni peirone\\documents\\github\\tectonicplates_simulator\\simulation\\simulation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|solutionrelative:simulation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|c:\\users\\giovanni peirone\\documents\\github\\tectonicplates_simulator\\simulation\\simulation\\shaders\\shader.vert||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|solutionrelative:simulation\\shaders\\shader.vert||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|c:\\users\\giovanni peirone\\documents\\github\\tectonicplates_simulator\\simulation\\simulation\\shaders\\shader.frag||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{C9423B88-9A12-45D8-9826-26F891291312}|Simulation\\Simulation.csproj|solutionrelative:simulation\\shaders\\shader.frag||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,19 +26,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "shader.vert",
+              "DocumentMoniker": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Shaders\\shader.vert",
+              "RelativeDocumentMoniker": "Simulation\\Shaders\\shader.vert",
+              "ToolTip": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Shaders\\shader.vert",
+              "RelativeToolTip": "Simulation\\Shaders\\shader.vert",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-11-07T21:24:48.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "shader.frag",
+              "DocumentMoniker": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Shaders\\shader.frag",
+              "RelativeDocumentMoniker": "Simulation\\Shaders\\shader.frag",
+              "ToolTip": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Shaders\\shader.frag",
+              "RelativeToolTip": "Simulation\\Shaders\\shader.frag",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-11-07T21:24:29.973Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Game.cs",
-              "DocumentMoniker": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Game.cs",
-              "RelativeDocumentMoniker": "Simulation\\Game.cs",
-              "ToolTip": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Game.cs",
-              "RelativeToolTip": "Simulation\\Game.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAowDIAAAAIAAAAAAAAAA==",
+              "Title": "Window.cs",
+              "DocumentMoniker": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Window.cs",
+              "RelativeDocumentMoniker": "Simulation\\Window.cs",
+              "ToolTip": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Window.cs*",
+              "RelativeToolTip": "Simulation\\Window.cs*",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAHQAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T22:45:38.506Z",
+              "WhenOpened": "2024-11-07T21:22:28.149Z",
               "EditorCaption": ""
             },
             {
@@ -41,7 +75,7 @@
               "RelativeDocumentMoniker": "Simulation\\Program.cs",
               "ToolTip": "C:\\Users\\Giovanni Peirone\\Documents\\GitHub\\TectonicPlates_Simulator\\Simulation\\Simulation\\Program.cs",
               "RelativeToolTip": "Simulation\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-01T22:42:25.857Z",
               "EditorCaption": ""

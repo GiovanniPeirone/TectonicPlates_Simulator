@@ -1,10 +1,21 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using YourNamespaceHere;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using Simulation;
 
 
-
-using (Game game = new Game(800, 600, "LearnOpenTK"))
+var nativeWindowSettings = new NativeWindowSettings()
 {
-    game.Run();
+    ClientSize = new Vector2i(800, 600),
+    Title = "LearnOpenTK - Creating a Window",
+    // This is needed to run on macos
+    Flags = ContextFlags.ForwardCompatible,
+};
+
+using (var window = new Window(GameWindowSettings.Default, nativeWindowSettings))
+{
+    window.Run();
 }
+
 
