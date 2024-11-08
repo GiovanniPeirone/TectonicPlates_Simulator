@@ -1,4 +1,4 @@
-# PlacasTectonicas_Simulador
+# TectonicPlates_Simulator
 application that simulates tectonic plates
 
 # OpenGL - OpenTK
