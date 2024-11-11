@@ -1,7 +1,7 @@
 # TectonicPlates_Simulator
 application that simulates tectonic plates
 
-# SDL o OpenGL (c++)
+# SDL(c++)
 
 https://www.libsdl.org/
 
