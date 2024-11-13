@@ -13,10 +13,11 @@ int main( int argc, char *argv[] )
 		    SDL_WINDOWPOS_UNDEFINED, 
 		    SDL_WINDOWPOS_UNDEFINED, 
 		    WIDTH,
-		    HEIGHT,
+	    	    HEIGHT,
 		    SDL_WINDOW_ALLOW_HIGHDPI 
     );
-    
+
+
     // Check that the window was successfully created
     if ( NULL == window )
     {
