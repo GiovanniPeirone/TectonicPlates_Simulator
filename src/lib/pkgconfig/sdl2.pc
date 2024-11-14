@@ -1,6 +1,6 @@
 # sdl pkg-config source file
 
-prefix=/tmp/tardir/SDL2-2.30.9/build-mingw/install-i686
+prefix=/tmp/tardir/SDL2-2.30.9/build-mingw/install-x86_64
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
