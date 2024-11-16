@@ -5,6 +5,8 @@ application that simulates tectonic plates
 
 https://www.libsdl.org/
 
+https://www.libsdl.org/release/SDL-1.2.15/docs/html/reference.html
+
 se usa el SDL.dll , toda la carpeta de Lib y include
 
 # Instalar 
