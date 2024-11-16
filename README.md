@@ -11,9 +11,10 @@ se usa el SDL.dll , toda la carpeta de Lib y include
 
 MSYS2 
 Descargar g++ (MSYS2)
+
 Descargar make (MSYS2)
 
-
+# Docs
 
 link al Trello: https://trello.com/invite/b/671f7947ccda22a6b6072589/ATTI158224cb37803e6556a597b75842c5d20EDC2A7D/simulador-de-placas-tectonicas
 
