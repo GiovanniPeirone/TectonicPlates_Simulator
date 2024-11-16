@@ -5,6 +5,8 @@ application that simulates tectonic plates
 
 https://www.libsdl.org/
 
+https://www.libsdl.org/release/SDL-1.2.15/docs/html/reference.html
+
 se usa el SDL.dll , toda la carpeta de Lib y include
 
 # Instalar 
@@ -25,3 +27,7 @@ link a la Documentacion: https://docs.google.com/document/d/1s1adT2l6LxWkfKWEWPl
 https://tectonic-explorer.concord.org/?rocks=false&planetWizard=true
 
 https://github.com/concord-consortium/tectonic-explorer
+
+# Palete
+
+https://coolors.co/palette/d9ed92-b5e48c-99d98c-76c893-52b69a-34a0a4-168aad-1a759f-1e6091-184e77
