@@ -2,16 +2,15 @@
 #include <iostream>
 
 const int WIDTH = 800;
-const int HEIGHT = 500;
+const int HEIGHT = 600;
 
 
 int selectOption(int option){
-	const int tam = 3;
+	const int tam = 2;
 
 	const std::string options[tam] = {
 		"1 - Draw Mode",
-		"2 - Draw Mode Second",
-		"3 - Colicionar"
+		"2 - Colicionar"
 	};
 
 	for (int i = 0; i < tam; i++){
@@ -26,6 +25,9 @@ int selectOption(int option){
 }
 
 int main(int argc, char* argv[]) {
+	
+	std::cout << "P para ver las opciones" << std::endl;
+	
 	// Inicializar SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
@@ -65,15 +67,20 @@ int main(int argc, char* argv[]) {
 	bool click = false;
 	
 
+	float puntoMedioX = WIDTH / 2;
+	float puntoAltoY = HEIGHT;
+
 	SDL_Event event;
 	SDL_RenderPresent(renderer); 	
 	// Bucle principal
 	while (running) {
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 
-		
+		SDL_RenderDrawLine(renderer, puntoMedioX, puntoAltoY, puntoMedioX, 0);
 
-	
+
+			
 		// Procesar eventos
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -100,6 +107,7 @@ int main(int argc, char* argv[]) {
 
 		int mouseX, mouseY;
 
+
 		// Dibujar si se mantiene presionado el botón izquierdo
 		if (click == true && option == 1) {
 			SDL_GetMouseState(&mouseX, &mouseY);
@@ -123,28 +131,16 @@ int main(int argc, char* argv[]) {
 			SDL_RenderPresent(renderer);  // Actualizar pantalla en cada punto dibujado
 		}
 
-		if(click == true && option == 2){
-		 	SDL_GetMouseState(&mouseX, &mouseY);	
-		
-			SDL_SetRenderDrawColor(renderer, 217, 237, 146, SDL_ALPHA_OPAQUE);	
-
-			SDL_RenderDrawPoint(renderer, mouseX, mouseY);
-
-			SDL_RenderPresent(renderer);
-
-		}
-		/*
-
-		if(opiton == 3){
 		
 
-			breack;
-
+		if(option == 2){
+			
 
 
 		}
+		
 
-		*/
+		SDL_RenderPresent(renderer);
 
 		//SDL_Delay(1);  // Reducir uso de CPU
 	}
