@@ -1,16 +1,19 @@
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <vector>
+
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
 
 int selectOption(int option){
-	const int tam = 2;
+	const int tam = 3;
 
 	const std::string options[tam] = {
 		"1 - Draw Mode",
-		"2 - Colicionar"
+		"2 - Colicionar",
+		"3 - ver vectores"
 	};
 
 	for (int i = 0; i < tam; i++){
@@ -65,7 +68,8 @@ int main(int argc, char* argv[]) {
 	int option;
 	bool running = true;
 	bool click = false;
-	
+
+	std::vector<std::vector<int>> posiciones; 
 
 	float puntoMedioX = WIDTH / 2;
 	float puntoAltoY = HEIGHT;
@@ -120,13 +124,21 @@ int main(int argc, char* argv[]) {
 			//SDL_RenderDrawPoint(renderer, mouseX, mouseY);
 			for(int a = 0; a < 10; a++) {
 				SDL_RenderDrawPoint(renderer, mouseX + a, mouseY + a);
+				posiciones.push_back({mouseX + a, mouseY + a});
 				SDL_RenderDrawPoint(renderer, mouseX - a, mouseY - a);
+				posiciones.push_back({mouseX - a, mouseY - a});
 				SDL_RenderDrawPoint(renderer, mouseX + a, mouseY - a);
+				posiciones.push_back({mouseX + a, mouseY - a});
 				SDL_RenderDrawPoint(renderer, mouseX - a, mouseY + a);
+				posiciones.push_back({mouseX - a, mouseY + a});	
 				SDL_RenderDrawPoint(renderer, mouseX - a, mouseY);
+				posiciones.push_back({mouseX - a, mouseY});
 				SDL_RenderDrawPoint(renderer, mouseX + a, mouseY);
+				posiciones.push_back({mouseX + a, mouseY});
 				SDL_RenderDrawPoint(renderer, mouseX, mouseY + a);
+				posiciones.push_back({mouseX, mouseY + a});
 				SDL_RenderDrawPoint(renderer, mouseX, mouseY - a);
+				posiciones.push_back({mouseX, mouseY - a});
 			}	
 			SDL_RenderPresent(renderer);  // Actualizar pantalla en cada punto dibujado
 		}
@@ -136,6 +148,21 @@ int main(int argc, char* argv[]) {
 		if(option == 2){
 			
 
+
+		}
+
+		if(option == 3){
+
+			for (const auto& fila : posiciones) {
+
+				for (int num : fila) {
+
+    					std::cout << num << " ";
+
+				}
+				std::cout << std::endl;
+			}
+			option = 3;
 
 		}
 		
