@@ -1,181 +1,141 @@
 #include <SDL2/SDL.h>
 #include <iostream>
-#include <vector>
-
+#include <ctime> 
+#include <string>
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-
-int selectOption(int option){
-	const int tam = 3;
-
-	const std::string options[tam] = {
-		"1 - Draw Mode",
-		"2 - Colicionar",
-		"3 - ver vectores"
-	};
-
-	for (int i = 0; i < tam; i++){
-		std::cout << options[i] << std::endl;
-	}
-	
-	std::cout << ">";	
-	std::cin >> option;
-	std::cout << std::endl;
-
-	return option;
-}
-
 int main(int argc, char* argv[]) {
-	
-	std::cout << "P para ver las opciones" << std::endl;
-	
-	// Inicializar SDL
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-		std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
-		return 1;
-	}
+    std::cout << "Presiona ESPACIO para iniciar." << std::endl;
 
-	// Crear la ventana
-	SDL_Window* window = SDL_CreateWindow(  
-			"Dibuja con el ratón",
-			SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED,
-			WIDTH, HEIGHT,
-			SDL_WINDOW_SHOWN);
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
+        return 1;
+    }
 
-	if (!window) {
-		std::cerr << "Error al crear la ventana: " << SDL_GetError() << std::endl;
-		SDL_Quit();
-		return 1;
-	}
-	
-	// Crear el renderer
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	if (!renderer) {
-		std::cerr << "Error al crear el renderer: " << SDL_GetError() << std::endl;
-		SDL_DestroyWindow(window);
-		SDL_Quit();
-		return 1;
-	}
+    SDL_Window* window = SDL_CreateWindow(
+        "Simulacion",
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        WIDTH, HEIGHT,
+        SDL_WINDOW_SHOWN
+    );
+    if (!window) {
+        std::cerr << "Error al crear la ventana: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return 1;
+    }
 
-	// Establecer color de fondo (blanco) y limpiar
-	SDL_SetRenderDrawColor(renderer, 52, 160, 164, SDL_ALPHA_OPAQUE);	
-	SDL_RenderClear(renderer);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        std::cerr << "Error al crear el renderer: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_SetRenderDrawColor(renderer, 52, 160, 164, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(renderer);
 
 
-	int option;
-	bool running = true;
-	bool click = false;
+    /*
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawLine(renderer, WIDTH / 2, HEIGHT, WIDTH / 2, 0);
+    SDL_RenderPresent(renderer);
+    */
 
-	std::vector<std::vector<int>> posiciones; 
-
-	float puntoMedioX = WIDTH / 2;
-	float puntoAltoY = HEIGHT;
-
-	SDL_Event event;
-	SDL_RenderPresent(renderer); 	
-	// Bucle principal
-	while (running) {
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    bool running = true;
+	bool start = false;
+    SDL_Event event;
 
 
-		SDL_RenderDrawLine(renderer, puntoMedioX, puntoAltoY, puntoMedioX, 0);
+	int mapa[HEIGHT][WIDTH];
 
-
-			
-		// Procesar eventos
+    while (running) {
+        
 		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
-				running = false;
-			}
-			else if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
-				click = true;  // Empezar a dibujar
-			}
-			else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
-				click = false;  // Detener el dibujo
-			}
 
-			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE){
+            if (event.type == SDL_QUIT) {
+                running = false;
+            }
+
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
+                start = true;
+            }
 			
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+                running = false;
+            }
 
-				running = false;
-			}
-			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_p){
-				option = selectOption(option); 			
-			}
+        }
 
-		}
-
-
-		int mouseX, mouseY;
-
-
-		// Dibujar si se mantiene presionado el botón izquierdo
-		if (click == true && option == 1) {
-			SDL_GetMouseState(&mouseX, &mouseY);
-
-			// Establecer color de dibujo (negro) y dibujar el punto
-			SDL_SetRenderDrawColor(renderer, 217, 237, 146, SDL_ALPHA_OPAQUE);
-			
-			int am = 10;
-
-			//SDL_RenderDrawPoint(renderer, mouseX, mouseY);
-			for(int a = 0; a < 10; a++) {
-				SDL_RenderDrawPoint(renderer, mouseX + a, mouseY + a);
-				posiciones.push_back({mouseX + a, mouseY + a});
-				SDL_RenderDrawPoint(renderer, mouseX - a, mouseY - a);
-				posiciones.push_back({mouseX - a, mouseY - a});
-				SDL_RenderDrawPoint(renderer, mouseX + a, mouseY - a);
-				posiciones.push_back({mouseX + a, mouseY - a});
-				SDL_RenderDrawPoint(renderer, mouseX - a, mouseY + a);
-				posiciones.push_back({mouseX - a, mouseY + a});	
-				SDL_RenderDrawPoint(renderer, mouseX - a, mouseY);
-				posiciones.push_back({mouseX - a, mouseY});
-				SDL_RenderDrawPoint(renderer, mouseX + a, mouseY);
-				posiciones.push_back({mouseX + a, mouseY});
-				SDL_RenderDrawPoint(renderer, mouseX, mouseY + a);
-				posiciones.push_back({mouseX, mouseY + a});
-				SDL_RenderDrawPoint(renderer, mouseX, mouseY - a);
-				posiciones.push_back({mouseX, mouseY - a});
-			}	
-			SDL_RenderPresent(renderer);  // Actualizar pantalla en cada punto dibujado
-		}
-
-		
-
-		if(option == 2){
-			
+        if (start) {
+           for(int i = 0; i < HEIGHT - 100; i++){
+				
+				for(int a = 0; a < WIDTH - 100; a++){
+						
+					bool add = false;
+					int probavilidad = 1;
 
 
-		}
+					int prob = rand() % probavilidad;
 
-		if(option == 3){
+					if (probavilidad <= 1){
+						add = true;
+					}
 
-			for (const auto& fila : posiciones) {
-
-				for (int num : fila) {
-
-    					std::cout << num << " ";
+					if (add){
+						mapa[i][a] = 1;	
+					}
 
 				}
-				std::cout << std::endl;
+			
 			}
-			option = 3;
 
-		}
-		
+			for(int i = 0; i < HEIGHT; i++){
+				for(int a = 0; a < WIDTH; a++){
+					if(mapa[i][a] == 1){
+                        SDL_SetRenderDrawColor(renderer, 217, 237, 146, SDL_ALPHA_OPAQUE);
+						SDL_RenderDrawPoint(renderer, i, a);
+					}
+				}
+			}
 
-		SDL_RenderPresent(renderer);
+        }
 
-		//SDL_Delay(1);  // Reducir uso de CPU
-	}
+        SDL_RenderPresent(renderer);
+    }
 
-	// Limpiar y cerrar
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-	SDL_Quit();
-
-	return 0;
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 0;
 }
+/*
+for(int i = 0; i < HEIGHT; i++){
+				
+				for(int a = 0; a < WIDTH; a++){
+						
+					bool add = false;
+					int probavilidad = 1;
+
+
+					if (a > 100 || i > 100){
+						probavilidad = 1;
+					}
+
+					int prob = rand() % probavilidad;
+
+					if (probavilidad <= 1){
+						add = true;
+					}
+
+					if (add){
+						
+					}
+
+				}
+			
+			}
+*/
