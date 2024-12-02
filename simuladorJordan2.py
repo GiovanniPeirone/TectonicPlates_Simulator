@@ -3,6 +3,7 @@ import random
 import math
 import noise  # Para la generación procedural de terreno con Perlin Noise
 import numpy as np
+from pygame import gfxdraw
 
 # Configuración inicial
 WIDTH, HEIGHT = 800, 600  # Tamaño de la pantalla
@@ -13,17 +14,21 @@ NOISE_SCALE = 100.0  # Escala para el ruido Perlin
 
 # Colores para representar diferentes alturas
 COLORS = {
-    'water': (0, 191, 255),  # Agua (mar)
-    'beach': (255, 255, 0),  # Playa
-    'land': (144, 238, 144),  # Tierra (verde claro)
-    'mountain': (139, 69, 19),  # Montañas (marrón)
-    'line': (255, 255, 255),  # Línea divisoria
-    'button': (50, 50, 200),  # Color para el botón
-    'button_hover': (70, 70, 255),  # Color para el botón al pasar el mouse
-    'volcano': (255, 69, 0),
-    'fault': (139, 0, 0),
-    'earthquake': (255, 255, 0),
-    'subduction': (128, 0, 128)
+    'water_deep': (0, 0, 139),      # Agua profunda
+    'water': (0, 191, 255),         # Agua
+    'water_shallow': (65, 105, 225), # Agua poco profunda
+    'beach': (238, 214, 175),       # Playa
+    'land': (34, 139, 34),          # Tierra
+    'forest': (0, 100, 0),          # Bosque
+    'mountain': (139, 137, 137),    # Montañas
+    'snow': (255, 250, 250),        # Nieve
+    'volcano': (165, 42, 42),       # Volcán
+    'lava': (255, 69, 0),          # Lava
+    'earthquake': (255, 215, 0),    # Terremoto
+    'ui_bg': (45, 45, 45),         # Fondo UI
+    'ui_button': (65, 65, 65),     # Botones
+    'ui_hover': (85, 85, 85),      # Hover
+    'ui_text': (200, 200, 200)     # Texto
 }
 
 # Botones de reset y elevar se eliminaron
@@ -39,6 +44,78 @@ class TectonicPlate:
         self.type = plate_type
         self.velocity = np.array([random.uniform(-1, 1), random.uniform(-1, 1)])
         self.velocity *= SIMULATION_SPEED
+
+class UI:
+    def __init__(self):
+        self.font = pygame.font.SysFont("Arial", 16)
+        self.title_font = pygame.font.SysFont("Arial", 24, bold=True)
+        self.buttons = {}
+        self.sidebar_width = 200
+        self.controls = {
+            'simulation_speed': 1.0,
+            'erosion_rate': 0.01,
+            'volcanic_activity': 0.5,
+            'earthquake_probability': 0.3
+        }
+        self.start_button = pygame.Rect(WIDTH - self.sidebar_width + 10, HEIGHT - 60, 180, 40)
+        self.active_slider = None
+
+    def handle_mouse_interaction(self, pos, clicked=False):
+        """Maneja la interacción del mouse con los controles"""
+        x, y = pos
+        y_pos = 60
+        for control_name in self.controls:
+            slider_rect = pygame.Rect(WIDTH - self.sidebar_width + 10, y_pos + 20, 160, 10)
+            if clicked and slider_rect.collidepoint(x, y - 5):
+                self.active_slider = control_name
+            elif clicked and not slider_rect.collidepoint(x, y - 5):
+                self.active_slider = None
+            
+            if self.active_slider == control_name:
+                relative_x = max(0, min(1, (x - slider_rect.x) / slider_rect.width))
+                self.controls[control_name] = round(relative_x, 2)
+            
+            y_pos += 50
+
+    def draw_sidebar(self, screen, simulation_started):
+        # Dibujar fondo del panel lateral
+        sidebar = pygame.Rect(WIDTH - self.sidebar_width, 0, self.sidebar_width, HEIGHT)
+        pygame.draw.rect(screen, COLORS['ui_bg'], sidebar)
+        
+        # Título
+        title = self.title_font.render("Panel de Control", True, COLORS['ui_text'])
+        screen.blit(title, (WIDTH - self.sidebar_width + 10, 10))
+
+        # Controles deslizantes
+        y_pos = 60
+        for control_name, value in self.controls.items():
+            # Nombre del control
+            label = self.font.render(f"{control_name.replace('_', ' ').title()}", True, COLORS['ui_text'])
+            screen.blit(label, (WIDTH - self.sidebar_width + 10, y_pos))
+            
+            # Valor actual
+            value_text = self.font.render(f"{value:.2f}", True, COLORS['ui_text'])
+            value_pos = (WIDTH - self.sidebar_width + 170, y_pos)
+            screen.blit(value_text, value_pos)
+            
+            # Barra deslizante
+            slider_rect = pygame.Rect(WIDTH - self.sidebar_width + 10, y_pos + 20, 160, 10)
+            pygame.draw.rect(screen, COLORS['ui_button'], slider_rect)
+            
+            # Indicador de posición
+            handle_pos = slider_rect.x + value * slider_rect.width
+            handle_rect = pygame.Rect(handle_pos - 5, slider_rect.y - 5, 10, 20)
+            pygame.draw.rect(screen, COLORS['ui_text'], handle_rect)
+            
+            y_pos += 50
+
+        # Botón de inicio/reinicio
+        button_color = COLORS['ui_hover'] if simulation_started else COLORS['ui_button']
+        pygame.draw.rect(screen, button_color, self.start_button)
+        button_text = "Reiniciar" if simulation_started else "Iniciar Simulación"
+        text = self.font.render(button_text, True, COLORS['ui_text'])
+        text_rect = text.get_rect(center=self.start_button.center)
+        screen.blit(text, text_rect)
 
 def get_color(height):
     """Retorna el color basado en la altura del terreno."""
@@ -119,27 +196,33 @@ def draw_button(screen, mouse_pos, start_button):
     
     return button_rect
 
-def handle_mouse_click(event, terrain, radius, lines, mode, dragging_line, simulation_started, start_button, can_cut):
+def handle_mouse_click(event, terrain, radius, lines, mode, dragging_line, simulation_started, ui, can_cut):
     """Maneja los clics del ratón y actualiza el estado del terreno y líneas divisorias."""
     mouse_x, mouse_y = event.pos
+
+    # Verificar si el clic fue en la UI
+    if mouse_x > WIDTH - ui.sidebar_width:
+        if ui.start_button.collidepoint(event.pos):
+            simulation_started = not simulation_started
+            if simulation_started:
+                can_cut = False
+        ui.handle_mouse_interaction(event.pos, True)
+        return terrain, lines, dragging_line, simulation_started, can_cut
+
     grid_x = mouse_x // GRID_SIZE
     grid_y = mouse_y // GRID_SIZE
-    button_rect = pygame.Rect(start_button[0], start_button[1], 200, 50)
 
-    if event.button == 1:  # Clic izquierdo: modificar terreno
+    if event.button == 1:  # Clic izquierdo
         if 0 <= grid_y < ROWS and 0 <= grid_x < COLS:
             apply_influence(terrain, grid_x, grid_y, radius, intensity=3 if mode == "Elevate" else -3)
-    elif event.button == 3:  # Clic derecho: cortar o continuar con el trazado
-        if can_cut:  # Si es posible cortar, interrumpimos el trazado
+    elif event.button == 3:  # Clic derecho
+        if can_cut:
             dragging_line = False
-            can_cut = False  # Ya no se puede cortar una vez que la simulación comenzó
-        else:  # Si no se ha cortado, comenzamos una nueva línea
+            can_cut = False
+        else:
             dragging_line = True
             if 0 <= grid_y < ROWS and 0 <= grid_x < COLS:
-                lines.append((grid_x, grid_y))  # Empezar línea divisoria
-
-    if event.button == 1 and button_rect.collidepoint(mouse_x, mouse_y) and not simulation_started:
-        simulation_started = True  # Empieza la simulación
+                lines.append((grid_x, grid_y))
 
     return terrain, lines, dragging_line, simulation_started, can_cut
 
@@ -245,64 +328,89 @@ def draw_geological_effects(screen, terrain, earthquake_points):
         pygame.draw.circle(screen, COLORS['earthquake'],
                          (x * GRID_SIZE, y * GRID_SIZE), 4)
 
+def add_visual_effects(screen, terrain, earthquake_points):
+    """Añade efectos visuales avanzados"""
+    # Efecto de brillo para agua
+    for y in range(ROWS):
+        for x in range(COLS):
+            if terrain[y][x] < 0:  # Agua
+                if random.random() < 0.001:
+                    brightness = random.randint(100, 255)
+                    for dx in range(-1, 2):
+                        for dy in range(-1, 2):
+                            if 0 <= x * GRID_SIZE + dx < WIDTH and 0 <= y * GRID_SIZE + dy < HEIGHT:
+                                pygame.gfxdraw.pixel(screen, 
+                                                   x * GRID_SIZE + dx, 
+                                                   y * GRID_SIZE + dy, 
+                                                   (brightness, brightness, brightness, 100))
+
+    # Efectos de partículas para terremotos
+    for x, y in earthquake_points:
+        for _ in range(8):  # Más partículas
+            offset_x = random.randint(-5, 5)
+            offset_y = random.randint(-5, 5)
+            alpha = random.randint(50, 200)
+            size = random.randint(1, 3)
+            pos = (int(x * GRID_SIZE + offset_x), int(y * GRID_SIZE + offset_y))
+            if 0 <= pos[0] < WIDTH and 0 <= pos[1] < HEIGHT:
+                pygame.draw.circle(screen, (*COLORS['earthquake'], alpha), pos, size)
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Generador de Terreno")
+    pygame.display.set_caption("Simulador de Placas Tectónicas")
     clock = pygame.time.Clock()
+    ui = UI()
 
     terrain = generate_terrain(ROWS, COLS)
-    lines = []  # Almacena las coordenadas de las líneas divisorias
+    lines = []
     radius = 5
     mode = "Elevate"
-    dragging_line = False  # Flag para arrastre de la línea divisoria
+    dragging_line = False
     simulation_started = False
-    can_cut = True  # Si es posible cortar la línea divisoria
-    start_button = (WIDTH // 2 - 100, HEIGHT - 80)  # Posición del botón "Empezó la simulación"
-
+    can_cut = True
     plates = []
     earthquake_points = []
     
     while True:
-        screen.fill((0, 0, 0))  # Limpiar pantalla
+        screen.fill((0, 0, 0))
+        mouse_pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
-                terrain, lines, dragging_line, simulation_started, can_cut = handle_mouse_click(event, terrain, radius, lines, mode, dragging_line, simulation_started, start_button, can_cut)
+                terrain, lines, dragging_line, simulation_started, can_cut = handle_mouse_click(
+                    event, terrain, radius, lines, mode, dragging_line, simulation_started, ui, can_cut)
             if event.type == pygame.MOUSEMOTION:
-                lines = handle_mouse_motion(event, terrain, radius, lines, dragging_line, mode)
+                if mouse_pos[0] > WIDTH - ui.sidebar_width:
+                    ui.handle_mouse_interaction(mouse_pos)
+                else:
+                    lines = handle_mouse_motion(event, terrain, radius, lines, dragging_line, mode)
             if event.type == pygame.MOUSEWHEEL:
                 radius = handle_mouse_wheel(event, radius)
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:  # Resetear el terreno
+                if event.key == pygame.K_r:
                     terrain = generate_terrain(ROWS, COLS)
-                    lines = []  # Limpiar las líneas divisorias
-                elif event.key == pygame.K_e:  # Alternar modo de elevar/reducir
+                    lines = []
+                    simulation_started = False
+                    can_cut = True
+                elif event.key == pygame.K_e:
                     mode = "Lower" if mode == "Elevate" else "Elevate"
         
-        # Actualizar simulación
         if simulation_started:
             if not plates:
                 plates = create_plates_from_lines(lines)
             terrain, earthquake_points = simulate_plate_tectonics(terrain, plates)
             apply_erosion(terrain)
         
-        # Dibujar terreno
         draw_terrain(screen, terrain)
-        
-        # Dibujar líneas divisorias
         draw_dividing_lines(screen, lines)
-
-        # Mostrar instrucciones
+        add_visual_effects(screen, terrain, earthquake_points)
+        
+        ui.draw_sidebar(screen, simulation_started)
         draw_instructions(screen, simulation_started, can_cut)
-
-        # Dibujar botón
-        button_rect = draw_button(screen, pygame.mouse.get_pos(), start_button)
-
-        draw_geological_effects(screen, terrain, earthquake_points)
 
         pygame.display.flip()
         clock.tick(FPS)
