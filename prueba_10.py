@@ -1,18 +1,14 @@
 import pygame
-from pygame.locals import *
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
 import noise
-import numpy as np
+import random
 
 # Tamaño de la ventana
 WIDTH, HEIGHT = 800, 600
-GRID_SIZE = 2  # Tamaño de cada celda
-ROWS, COLS = HEIGHT // GRID_SIZE, WIDTH // GRID_SIZE * 2  # Doble del ancho
+GRID_SIZE = 10  # Tamaño de cada celda
+ROWS, COLS = HEIGHT // GRID_SIZE, WIDTH // GRID_SIZE  # El grid será del tamaño adecuado
 FPS = 60
 
-# Funciones para crear el terreno en 3D usando ruido Perlin
+# Colores para las alturas
 def get_color(height):
     """Retorna el color basado en la altura."""
     if height == 0:
@@ -34,65 +30,37 @@ def generate_terrain(rows, cols):
     for y in range(rows):
         row = []
         for x in range(cols):
+            # Genera el ruido Perlin para la posición x, y
             noise_value = noise.pnoise2(x / scale, y / scale, octaves=6, persistence=0.5, lacunarity=2.0)
-            height = int((noise_value + 1) * 7.5)  # Mapea valores de ruido (-1 a 1) a alturas (0-15)
+            # Mapea los valores de ruido a un rango de alturas de 0 a 15
+            height = int((noise_value + 1) * 7.5)  # Mapea el ruido (-1 a 1) a (0 a 15)
             row.append(height)
         terrain.append(row)
     return terrain
 
-def draw_cube(x, y, z, size):
-    """Dibuja un cubo en la posición (x, y, z) con el tamaño 'size'."""
-    vertices = [
-        (x - size / 2, y - size / 2, z - size / 2),
-        (x + size / 2, y - size / 2, z - size / 2),
-        (x + size / 2, y + size / 2, z - size / 2),
-        (x - size / 2, y + size / 2, z - size / 2),
-        (x - size / 2, y - size / 2, z + size / 2),
-        (x + size / 2, y - size / 2, z + size / 2),
-        (x + size / 2, y + size / 2, z + size / 2),
-        (x - size / 2, y + size / 2, z + size / 2)
-    ]
+def draw_terrain(terrain):
+    """Dibuja el terreno en pantalla, dividido en dos placas."""
+    for y in range(ROWS):
+        for x in range(COLS):
+            color = get_color(terrain[y][x])  # Obtener el color de la altura
+            pygame.draw.rect(screen, color, (x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE))
 
-    faces = [
-        (0, 1, 2, 3),  # Front face
-        (4, 5, 6, 7),  # Back face
-        (0, 1, 5, 4),  # Left face
-        (1, 2, 6, 5),  # Bottom face
-        (2, 3, 7, 6),  # Right face
-        (3, 0, 4, 7)   # Top face
-    ]
-
-    glBegin(GL_QUADS)
-    for face in faces:
-        for vertex in face:
-            glVertex3fv(vertices[vertex])
-    glEnd()
-
-def draw_terrain(terrain, offset_x_left, offset_x_right):
-    """Dibuja el terreno en 3D."""
-    for y, row in enumerate(terrain):
-        for x, height in enumerate(row):
-            if 0 <= x - offset_x_left < COLS // 2:  # Placa izquierda
-                color = get_color(height)
-                glColor3fv(color)
-                glPushMatrix()
-                glTranslatef((x - offset_x_left) * GRID_SIZE, height * GRID_SIZE, y * GRID_SIZE)
-                draw_cube(0, 0, 0, GRID_SIZE)  # Usamos la nueva función para dibujar el cubo
-                glPopMatrix()
-            elif COLS // 2 <= x - offset_x_right < COLS:  # Placa derecha
-                color = get_color(height)
-                glColor3fv(color)
-                glPushMatrix()
-                glTranslatef((x - offset_x_right) * GRID_SIZE, height * GRID_SIZE, y * GRID_SIZE)
-                draw_cube(0, 0, 0, GRID_SIZE)  # Usamos la nueva función para dibujar el cubo
-                glPopMatrix()
+def move_plates(terrain, offset_x_left, offset_x_right):
+    """Simula el movimiento de las placas tectónicas."""
+    if offset_x_right > COLS // 2:
+        for y in range(ROWS):
+            for x in range(COLS // 2, COLS):
+                if x - offset_x_right < COLS // 2:
+                    terrain[y][x - offset_x_left] = terrain[y][x]  # Mueve el terreno
+                    terrain[y][x] = 0  # El terreno de la placa inferior desaparece
+        return offset_x_left + 1, offset_x_right - 1
+    return offset_x_left, offset_x_right
 
 def main():
     pygame.init()
-    display = (WIDTH, HEIGHT)
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-    gluPerspective(45, (display[0] / display[1]), 0.1, 100.0)
-    glTranslatef(-WIDTH / 2, -HEIGHT / 2, -200)  # Desplazamiento inicial
+    global screen
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Simulador de Choque de Placas Tectónicas")
     clock = pygame.time.Clock()
 
     terrain = generate_terrain(ROWS, COLS)
@@ -100,8 +68,7 @@ def main():
     running = True
 
     while running:
-        # Limpiar la pantalla antes de dibujar nuevamente
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        screen.fill((0, 0, 0))  # Limpiar pantalla
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -110,14 +77,13 @@ def main():
                 terrain = generate_terrain(ROWS, COLS)  # Reinicia el terreno
                 offset_x_left, offset_x_right = 0, COLS // 2
 
-        # Dibujar terreno de ambas placas
-        draw_terrain(terrain, offset_x_left, offset_x_right)
+        # Mueve las placas
+        offset_x_left, offset_x_right = move_plates(terrain, offset_x_left, offset_x_right)
+        
+        # Dibujar terreno
+        draw_terrain(terrain)
 
-        # Mover las placas hacia el centro
-        if offset_x_left < COLS // 2 and offset_x_right > COLS // 2:
-            offset_x_left += 1
-            offset_x_right -= 1
-
+        # Actualizar pantalla
         pygame.display.flip()
         clock.tick(FPS)
 
